@@ -22,6 +22,10 @@ from msdq.modules.warns import warn
 
 BLACKLIST_GROUP = 11
 
+def delete_messages(context: CallbackContext, update: Update, message_id: int) -> None:
+    # Menghapus pesan yang di-reply
+    context.bot.delete_message(update.message.chat_id, message_id)
+
 
 @user_admin
 @typing_action
@@ -99,6 +103,8 @@ def add_blacklist(update: Update, context: CallbackContext):
                     f"Added blacklist <code>{html.escape(to_blacklist[0])}</code> in chat: <b>{chat_name}</b>!",
                     parse_mode=ParseMode.HTML,
                 )
+                context.job_queue.run_once(lambda context: delete_messages(context, update, replied_msg.message_id), 2)
+                update.message.delete()
 
             else:
                 send_message(
