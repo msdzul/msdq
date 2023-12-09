@@ -103,7 +103,6 @@ def add_blacklist(update: Update, context: CallbackContext):
                     f"Added blacklist <code>{html.escape(to_blacklist[0])}</code> in chat: <b>{chat_name}</b>!",
                     parse_mode=ParseMode.HTML,
                 )
-                context.job_queue.run_once(lambda context: delete_messages(context, update, text.message_id), 2)
                 update.message.delete()
 
             else:
@@ -112,8 +111,8 @@ def add_blacklist(update: Update, context: CallbackContext):
                     f"Added blacklist trigger: <code>{len(to_blacklist)}</code> in <b>{chat_name}</b>!",
                     parse_mode=ParseMode.HTML,
                 )
-                context.job_queue.run_once(lambda context: delete_messages(context, update, text.message_id), 2)
                 update.message.delete()
+                
 
         else:
             text = pesan.text
@@ -130,8 +129,8 @@ def add_blacklist(update: Update, context: CallbackContext):
                     f"Added blacklist <code>{html.escape(to_blacklist[0])}</code> in chat: <b>{chat_name}</b>!",
                     parse_mode=ParseMode.HTML,
                 )
-                context.job_queue.run_once(lambda context: delete_messages(context, update, text.message_id), 2)
                 update.message.delete()
+                context.bot.delete_message(chat_id=chat.id, message_id=pesan.message_id)
                 
     except:
           send_message(
